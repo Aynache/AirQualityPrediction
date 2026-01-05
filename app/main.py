@@ -1,3 +1,5 @@
+import random
+import numpy as np
 from fastapi import FastAPI, HTTPException
 from dotenv import load_dotenv
 
@@ -30,16 +32,32 @@ def predict(req: PredictRequest):
         else:
             payload = fetch_weather(req.city)
             feats = extract_features(payload)
+            # ✅ Clipping simple pour éviter les valeurs hors-distribution
+            # RH en % (0-100)
+            feats["RH"] = float(np.clip(feats["RH"], 0.0, 100.0))
+
+            # NO2: garde une plage plausible (AirQualityUCI typiquement <= ~400-500)
+            # (Tu peux ajuster si tu veux)
+            if feats.get("NO2(GT)") is not None:
+                feats["NO2(GT)"] = float(np.clip(feats["NO2(GT)"], 0.0, 500.0))
+
+            # Température: plage large réaliste
+            feats["T"] = float(np.clip(feats["T"], -50.0, 50.0))
 
         # 2) Build df_future (historique fallback + 1 pas futur)
         df_future = build_future_df(FALLBACK, feats)
 
-        # 3) Load model + warm (mini-fit)
+        # 3) Load model (sans mini-fit)
         m = load_and_warm_model(MODEL_PATH, TRAIN_CSV)
 
         # 4) Predict
         fc = m.predict(df_future)
-        yhat = float(fc["yhat1"].iloc[-1])
+        raw_yhat = float(fc["yhat1"].iloc[-1])
+
+        # ✅ Clip physique + clip "dataset-realistic"
+        # CO(GT) dans AirQualityUCI est typiquement < 15 mg/m³
+        yhat = float(np.clip(raw_yhat, 0.0, 15.0))
+
         ds = str(fc["ds"].iloc[-1])
 
         return PredictResponse(city=req.city, ds=ds, yhat1=yhat, inputs=feats)
