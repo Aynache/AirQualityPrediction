@@ -63,3 +63,78 @@ projet/
 │   └── train_df_deploy.csv
 ├── requirements.txt
 └── streamlit_app.py
+
+
+🔐 Configuration du fichier .env
+
+L’application nécessite une clé API WeatherAPI pour fonctionner.
+
+1️⃣ Créer le fichier .env
+
+À la racine du projet :
+
+touch .env
+
+2️⃣ Ajouter la clé API
+
+Ouvre le fichier .env et ajoute :
+
+WEATHER_API_KEY=VOTRE_CLE_API_ICI
+
+
+👉 La clé peut être obtenue sur : https://www.weatherapi.com/
+
+⚠️ Important
+
+Le fichier .env ne doit pas être partagé publiquement.
+
+Il est chargé automatiquement par l’application via python-dotenv.
+
+🐍 Environnement virtuel et exécution
+
+Il est recommandé d’utiliser un environnement virtuel Python.
+
+1️⃣ Créer un environnement virtuel
+python3 -m venv venv
+
+2️⃣ Activer l’environnement virtuel
+Linux / macOS
+source venv/bin/activate
+
+Windows (PowerShell)
+venv\Scripts\activate
+
+
+Une fois activé, le terminal affiche (venv).
+
+3️⃣ Installer les dépendances
+pip install --upgrade pip
+pip install -r requirements.txt
+
+4️⃣ Lancer le backend (FastAPI)
+uvicorn app.main:app --reload
+
+
+Par défaut :
+
+API : http://127.0.0.1:8000
+
+Documentation interactive : http://127.0.0.1:8000/docs
+
+5️⃣ Lancer le frontend (Streamlit)
+
+Dans un second terminal (avec le même environnement virtuel activé) :
+
+streamlit run streamlit_app.py
+
+
+Interface accessible sur :
+
+http://localhost:8501
+
+6️⃣ Architecture d’exécution recommandée
+Terminal 1 → FastAPI (backend)
+Terminal 2 → Streamlit (frontend)
+
+
+Le frontend communique automatiquement avec l’API FastAPI.
