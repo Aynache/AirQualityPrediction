@@ -10,12 +10,12 @@ def build_future_df(fallback_csv_path: str, new_feats: dict, n_context: int = 48
 
     context = hist[["ds", "y"] + REGRESSORS].tail(n_context).copy()
 
-    # ✅ Remapper les dates du contexte pour finir "maintenant" (heure courante arrondie)
+    # Remapper les dates du contexte pour finir "maintenant" (heure courante arrondie)
     now = pd.Timestamp.now(tz="America/Toronto").floor("h").tz_localize(None)
     start = now - pd.Timedelta(hours=n_context - 1)
     context["ds"] = pd.date_range(start=start, periods=n_context, freq="h")
 
-    # ✅ Ligne future (t+1h)
+    # Ligne future (t+1h)
     future_ds = now + pd.Timedelta(hours=1)
 
     future = {

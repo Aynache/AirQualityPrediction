@@ -12,8 +12,8 @@ def load_and_warm_model(model_path: str, train_csv_path: str):
     train_df["ds"] = pd.to_datetime(train_df["ds"], errors="coerce")
     train_df = train_df.dropna(subset=["ds", "y"] + REGRESSORS)
 
-    # ✅ mini-fit: restaure l'état interne (freq, etc.)
-    # IMPORTANT: learning_rate fixé => pas de LR finder (et évite ton erreur torch/pickle)
+    # mini-fit: restaure l'état interne (freq, etc.)
+    # IMPORTANT: learning_rate fixé => pas de LR finder
     m.fit(
         train_df,
         freq="h",

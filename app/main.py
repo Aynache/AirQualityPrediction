@@ -82,10 +82,10 @@ def predict(req: PredictRequest):
             feats["RH"] = float(req.rh)
             feats["NO2(GT)"] = float(req.no2_ugm3) if req.no2_ugm3 is not None else None
         else:
-            payload = fetch_weather(req.city)  # garde ton fonctionnement existant
+            payload = fetch_weather(req.city)
             feats = extract_features(payload)
 
-            # ✅ Clipping simple pour éviter les valeurs hors-distribution
+            # Clipping simple pour éviter les valeurs hors-distribution
             feats["RH"] = float(np.clip(feats["RH"], 0.0, 100.0))
             if feats.get("NO2(GT)") is not None:
                 feats["NO2(GT)"] = float(np.clip(feats["NO2(GT)"], 0.0, 500.0))

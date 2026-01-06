@@ -117,5 +117,5 @@ def extract_realtime(payload: dict, city_fallback: str) -> dict:
         "current_air_quality": current_air_quality,
         "current_weather": current_weather,
         "features_used_for_prediction": features_used,
-        "raw": None,  # mets payload si tu veux debug
+        "raw": None,
     }

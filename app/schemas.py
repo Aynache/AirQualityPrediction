@@ -39,7 +39,6 @@ class RealtimeWeather(BaseModel):
 
 
 class FeaturesUsedForPrediction(BaseModel):
-    # Ce que ton modèle utilise réellement
     T: Optional[float] = None
     RH: Optional[float] = None
     NO2_GT: Optional[float] = Field(None, alias="NO2(GT)")
